@@ -14,7 +14,7 @@ enum dilemma_keymap_layers {
     LAYER_TMUX_SFT,
     LAYER_TMUX_WIN,
     // LAYER_GAM,
-    // LAYER_MAC,
+    LAYER_MAC,
 };
 
 
@@ -28,6 +28,54 @@ enum dilemma_keymap_layers {
 #define    HRW_J    KC_J
 #define    HRW_K    LT(LAYER_TMUX_WIN,KC_K)
 #define    HRW_L    KC_L
+
+
+
+// Macros
+// #define    MACRO_EM1    SEND_STRING("abcdefg")
+// #define    MACRO_EM2    SEND_STRING("test-macro")
+// #define    MACRO_EM3    SEND_STRING("hello world")
+
+typedef enum {
+  MAC_SIMPLE_STRING = 0,
+  MAC_SEQUENCE      = 1,
+} mac_action_t;
+
+typedef struct {
+  uint16_t      keycode;  // the custom keycode from the enum above
+  mac_action_t  type;     // MAC_SIMPLE_STRING or MAC_SEQUENCE
+  const char   *payload;  // the string or sequence to send
+} macro_map_t;
+
+
+
+enum custom_keycodes {
+  MACRO_EM1 = SAFE_RANGE,
+  MACRO_EM2,
+  MACRO_EM3,
+  // MACRO_HELLO,
+  // add more keycodes here as you need them
+};
+
+
+// Your entire macro config lives here.
+// To add a macro: add a keycode to the enum above, then add one row here.
+static const macro_map_t macros[] = {
+  // Plain text
+  // { MACRO_EM1,   MAC_SEQUENCE, "j" SKC_AT "jesber.xyz" },
+  { MACRO_EM1,   MAC_SEQUENCE, "j" SS_RALT("2") "jesber.xyz" },
+  { MACRO_EM2,   MAC_SEQUENCE, "archerr" SS_RALT("2") "jesber.xyz" },
+  { MACRO_EM3,   MAC_SEQUENCE, "jesper.berglund" SS_RALT("2") "forsakringskassan.se" }
+  // { MACRO_EM2,   MAC_SIMPLE_STRING, "j@jesber.xyz" },
+  // { MACRO_EM2,   MAC_SEQUENCE, SS_TAP() "Hello!" },
+
+  // Another plain text
+  // { MACRO_EM2,   MAC_SIMPLE_STRING, "j@jesber.xyz" },
+
+  // // Example: sequence with modifiers and taps
+  // // SS_LCTL("t") presses Ctrl+T, SS_TAP(X_ENTER) taps Enter.
+  // { MACRO_HELLO, MAC_SEQUENCE,      SS_LCTL("t") SS_TAP(X_ENTER) "Hello!" },
+};
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -98,7 +146,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //                   ├──────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────┤
                           KC_PSCR, KC_BRID, KC_BRIU, _______, _______,        RGB_TOG, RGB_HUD, RGB_VAD, RGB_VAI, RGB_HUI,
   //                   ╰──────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────╯
-                                              QK_BOOT, KC_ENTER, _______,     _______, _______, _______
+                                              QK_BOOT, KC_ENTER, _______,     _______, _______, MO(LAYER_MAC)
+                                              // QK_BOOT, KC_ENTER, _______,     _______, _______, _______
   //                                         ╰────────────────────────────╯ ╰────────────────────────────╯
   ),
 
@@ -109,7 +158,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //                   ╭───┬───┬───┬───┬───╮   ╭───┬───┬───┬───┬───╮
   //                   │ 6│ 8│ 9│ 0│ ?│   │   │   │   │   │ Å │
   //                   ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
-  //                   │ 3│   │ 2│ 1│ ?│   │   │ 󰖭 │   │   │ Ä │
+  //                   │ 3│   │ 2│ 1│ ?│   │ < │ 󰖭 │ > │   │ Ä │
   //                   ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
   //                   │ 4│   │ 5│ 7│ ?│   │   │   │   │   │ Ö │
   //                   ╰───┴───┼───┼───┼───┤   ├───┼───┼───┼───┴───╯
@@ -245,6 +294,30 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 
 
+  [LAYER_MAC] = LAYOUT_split_3x5_3(
+
+                    // ╭───┬───┬───┬───┬───╮   ╭───┬───┬───┬───┬───╮
+                    // │ - │ - │ - │ - │ - │   │ - │ - │ - │ - │ - │
+                    // ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
+                    // │ - │ - │ - │ - │ - │   │ - │ - │ - │ - │ - │
+                    // ├───┼───┼───┼───┼───┤   ├───┼───┼───┼───┼───┤
+                    // │ - │ - │ - │ - │ - │   │ - │ - │ - │ - │ - │
+                    // ╰───┴───┼───┼───┼───┤   ├───┼───┼───┼───┴───╯
+                    //         │ - │ - │ - │   │ - │ - │ - │
+                    //         ╰───┴───┴───╯   ╰───┴───┴───╯
+
+  //                   ╭──────────────────────────────────────────────────╮ ╭──────────────────────────────────────────────────╮
+                            _______, _______, _______, _______, _______,       MACRO_EM1, _______, _______, _______, _______,
+  //                   ├──────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────┤
+                            _______, _______, _______, _______, _______,       MACRO_EM2, _______, _______, _______, _______,
+  //                   ├──────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────┤
+                            _______, _______, _______, _______, _______,       MACRO_EM3, _______, _______, _______, _______,
+  //                   ╰──────────────────────────────────────────────────┤ ├──────────────────────────────────────────────────╯
+                                               _______, _______, _______,     _______, _______, _______
+  //                                         ╰────────────────────────────╯ ╰────────────────────────────╯
+  ),
+
+
 
   // [LAYER_<++>] = LAYOUT_split_3x5_3(
   //
@@ -272,8 +345,33 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 
+
+static bool try_run_macro(uint16_t keycode, keyrecord_t *record) {
+  if (!record->event.pressed) return false;
+
+  for (size_t i = 0; i < sizeof(macros) / sizeof(macros[0]); i++) {
+    if (macros[i].keycode == keycode) {
+      switch (macros[i].type) {
+        case MAC_SIMPLE_STRING:
+        case MAC_SEQUENCE:
+          if (macros[i].payload) {
+            SEND_STRING(macros[i].payload);
+          }
+          return true;
+      }
+    }
+  }
+  return false;
+}
+
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (record->event.pressed) {
+
+         if (try_run_macro(keycode, record)) {
+             return false;
+         }
+
         // Check if LAYER_TMUX is currently active *anywhere in the layer stack*
         // layer_state_cmp(layer_state, 1UL << LAYER_TMUX) only checks if it's the *top* layer.
         // layer_state_is(layer_id) checks if it's the top layer.

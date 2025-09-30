@@ -6,3 +6,5 @@ RGB_MATRIX_ENABLE = yes
 
 # Ensure Bootmagic is enabled
 BOOTMAGIC_ENABLE = yes
+
+SEND_STRING_ENABLE = yes
